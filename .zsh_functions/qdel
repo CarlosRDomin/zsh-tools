@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+qdel() {
+  local usage="\n\nUsage: qdel LABEL [LABEL_NAME=app]\nE.g.: \`qdel tracking\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "Delete all pods that match a given label.${usage}"
+    return
+  elif [[ "$#" < 1 ]]; then
+    >&2 echo "ERROR: qdel requires at least 1 argument!${usage}"
+    return -1
+  fi
+
+  local label_value=${1}
+  local label_name=${2:-app}
+
+  kubectl delete po -l "${label_name}=${label_value}" --grace-period=0
+}

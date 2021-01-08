@@ -1,0 +1,12 @@
+#compdef gitlab_ls
+
+_gitlab_ls() {
+  local COMP_WORDS=( "${words[@]:1}" )  # Easier to work with [1,N] than [2,N+1]
+  local COMP_CWORD=$(( ${CURRENT} - 1 ))  # Easier to work with [1,N] than [2,N+1]
+
+  # Perform the completion based on the argument number
+  case ${COMP_CWORD} in
+    1) compadd $(curl -s --header "${GITLAB_API_TOKEN}" "https://gitlab.com/api/v4/projects?membership=true&order_by=path&sort=asc&simple=true&per_page=100&search_namespaces=true&search=${COMP_WORDS[1]}" | jq -r '.[].path_with_namespace') ;;
+    2) compadd $(curl -s --header "${GITLAB_API_TOKEN}" "https://gitlab.com/api/v4/projects/$(echo ${COMP_WORDS[1]} | sed 's/\//%2F/g')/registry/repositories" | jq -r ".[].name") ;;
+  esac
+}

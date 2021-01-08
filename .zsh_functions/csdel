@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+csdel() {
+  local ns=${1:-`kubens -c`}
+  echo "Deleting ${ns}"
+  aifi-cloud-stores delete --namespace ${ns}
+}

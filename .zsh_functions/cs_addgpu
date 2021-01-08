@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+cs_addgpu() {
+  local usage="\n\nUsage: cs_addgpu RESOURCE_TYPE RESOURCE_NAME CONTAINER_NAME\nE.g.: \`cs_addgpu sts detection detection-0\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "Add GPU limits to a cloud-store.${usage}"
+    return
+  elif [[ "$#" < 3 ]]; then
+    >&2 echo "ERROR: cs_addgpu requires at least 3 arguments!${usage}"
+    return -1
+  fi
+
+  local resource_type=${1}
+  local resource_name=${2}
+  local container_name=${3}
+  local gpu_limits=${4:-1}
+
+  qpatch "${resource_type}" "${resource_name}" '{"name": "'${container_name}'", "resources": {"limits": {"nvidia.com/gpu": "'${gpu_limits}'"}}}'
+}

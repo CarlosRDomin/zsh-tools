@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+qls() {
+  local what="po"
+  local outputFormat=("")
+  if [[ "$1" == "-n" || "$1" == "--name" ]]; then
+    outputFormat=(custom-columns='NAME:.metadata.name' --no-headers)
+    shift
+  fi
+  if [[ $1 =~ ^(po|pod|svc|service|cm|configmap|deploy|deployment|no|node|ns|namespace|ing|ingress|sts|statefulset)s?$ ]]; then
+    what="$1"
+    shift
+  fi
+  local searchFor="$1"
+  
+  kubectl get "${what}" -o "${outputFormat[@]}" | ( [ -z "${searchFor}" ] && cat || grep --color=always -i "${searchFor}")
+}

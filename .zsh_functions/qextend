@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+qextend() {
+  curl --location --request PATCH 'cloud-stores.us.internal/api/v1/stores/lifespan' --header 'Content-Type: application/json' --data-raw '{"namespace": "'`kubens -c`'", "extend_time": "'${1:-$((24*3600))}'"}'
+}

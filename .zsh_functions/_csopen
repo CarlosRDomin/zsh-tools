@@ -1,0 +1,11 @@
+#compdef csopen
+
+_csopen() {
+  local COMP_CWORD=$(( ${CURRENT} - 1 ))  # Easier to work with [1,N] than [2,N+1]
+
+  # Perform the completion based on the argument number
+  case ${COMP_CWORD} in
+    1) compadd "cc" "control-center" "rp" "recplay" "recplayer-app" ;;
+    2) compadd $(qls -n ns) ;;  # Leverage kubens's autocompletion :)
+  esac
+}

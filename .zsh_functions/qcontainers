@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+qcontainers() {
+  local usage="\n\nUsage: qcontainers RESOURCE_TYPE RESOURCE_NAME\nE.g.: \`qcontainers deploy detection\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "List all containers in a pod.${usage}"
+    return
+  elif [[ "$#" != 2 ]]; then
+    >&2 echo "ERROR: qcontainers requires exactly 2 arguments!${usage}"
+    return -1
+  fi
+
+  # In order to work for both pods and (statefulsets, deployments, etc), list both .spec.containers as well as .spec.template.spec.containers :)
+  local template=""
+  for prefix in ".spec.template" ""; do
+    for suffix in "initContainers" "containers"; do
+      template+="{{ range ${prefix}.spec.${suffix} }}{{ .name }} {{ end }}"
+    done
+  done
+
+  kubectl get -o template --template="${template}" "$@"
+}

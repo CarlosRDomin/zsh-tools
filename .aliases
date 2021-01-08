@@ -1,0 +1,11 @@
+alias q='kubectl '
+alias qx='kubectl exec -ti '
+alias qd='kubectl describe '
+alias ql='kubectl logs '
+alias qlt='kubectl logs --tail 30 -f '
+alias 'qpf?'='ps | grep port-forward | grep -v grep'
+alias qpf-kill='kill $(qpf? | tee /dev/tty | awk '\''{print $1}'\'')'
+
+alias l='ls -al'
+alias 'g?'='git status'
+alias gov='git commit --amend --no-edit && git push -f'

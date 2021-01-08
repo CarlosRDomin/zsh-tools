@@ -1,0 +1,18 @@
+#compdef qpf
+
+_qpf() {
+  local COMP_WORDS=( "${words[@]:1}" )  # Easier to work with [1,N] than [2,N+1]
+  local COMP_CWORD=$(( ${CURRENT} - 1 ))  # Easier to work with [1,N] than [2,N+1]
+  local resrouce_type="po"
+  if [[ ${COMP_CWORD} == 1 ]]; then compadd po pod svc service deploy deployment sts statefulset; fi
+
+  # Check if the first word is a valid resource type
+  if [[ ${COMP_WORDS[1]} =~ ^(po|pod|svc|service|deploy|deployment|sts|statefulset)s?$ ]]; then
+    resrouce_type="${COMP_WORDS[1]}"
+    COMP_CWORD=$(( ${COMP_CWORD} - 1 ))  # This is an optional param, decrease counter
+  fi
+
+  # Only have autocomplete for the main argument
+  if [[ ${COMP_CWORD} != 1 ]]; then return -1; fi
+  compadd $(qls -n ${resrouce_type})  # List all resources of that type
+}

@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+csopen() {
+  local usage="\n\nUsage: csopen cc|control-center|rp|recplay|recplayer-app NAMESPACE\nE.g.: \`csopen cc my-cloud-store-511720b9-469e-4b45-b97d-35e64aba296a\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "Open an ingressed URL in a cloud-store (e.g. control-center).${usage}"
+    return
+  elif [[ "$#" < 1 ]]; then
+    >&2 echo "ERROR: csopen requires at least 1 argument!${usage}"
+    return -1
+  fi
+
+  local what=$1
+  local namespace=${2-$(kubens -c)}
+  case ${what} in
+    cc|control-center) open "http://control-center.${namespace}.cloud-stores.us.internal/" ;;
+    rp|recplay|recplayer-app) open "http://recplayer-app-plus.${namespace}.cloud-stores.us.internal/" ;;
+  esac
+}

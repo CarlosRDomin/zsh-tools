@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+gitlab_ls() {
+  if [[ "$1" == "-h" ]]; then
+    echo "Get the name of the most recently started pod/namespace/whatever.\n\nUsage: qlatest RESOURCE_TYPE\nE.g.: \`qlatest ns\`\nRequires the env var GITLAB_API_TOKEN to be set, e.g. GITLAB_API_TOKEN=\"PRIVATE-TOKEN: your-token-here\""
+    return
+  fi
+
+  local projectPath=$(echo ${1:-"aifi-ml/tools/base_images"} | sed 's/\//%2F/g')  # Escape slashes ('/')
+  local tag=${2}
+  local page=${3:-1}
+  local maxResults=${4:-100}
+  local fullPath="https://gitlab.com/api/v4/projects/${projectPath}/registry/repositories"
+  local id=$(curl -s --header "${GITLAB_API_TOKEN}" "${fullPath}" | jq -r ".[] | select(.name == \"${tag}\") | .id")
+
+  [ -z $id ] && echo "Unable to retrieve tag ${tag} in repository ${1}" && return -1
+  curl -s --header "${GITLAB_API_TOKEN}" "https://gitlab.com/api/v4/projects/${projectPath}/registry/repositories/${id}/tags?per_page=${maxResults}&page=${page}" | jq -r '.[].location'
+}

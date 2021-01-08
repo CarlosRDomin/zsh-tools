@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+qpf() {
+  local resource_type="pod"
+  local usage="\n\nUsage: qpf [RESOURCE_TYPE=pod] RESOURCE_NAME PORT [PORT PORT ...]\nE.g.: \`qpf deploy control-center 3000 12345\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "Port-forward the given port(s).${usage}"
+    return
+  elif [[ "$#" < 2 ]]; then
+    >&2 echo "ERROR: qpf requires at least 2 arguments!${usage}"
+    return -1
+  fi
+  if [[ $1 =~ ^(po|pod|svc|service|deploy|deployment|sts|statefulset)s?$ ]]; then
+    resource_type="$1"
+    shift
+  fi
+
+  local resource_name="$1"
+  local ports=(${@:2})
+
+  kubectl port-forward "${resource_type}/${resource_name}" --address localhost "${ports[@]}" > /dev/null 2>&1 &
+}

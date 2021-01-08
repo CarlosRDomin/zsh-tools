@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+qlatest() {
+  if [[ "$1" == "-h" ]]; then
+    echo "Get the name of the most recently started pod/namespace/whatever.\n\nUsage: qlatest RESOURCE_TYPE\nE.g.: \`qlatest ns\`"
+    return
+  fi
+
+  local resource_type=${1-ns}
+  kubectl get "${resource_type}" -o jsonpath='{.items[-1:].metadata.name}' --sort-by=metadata.creationTimestamp
+}

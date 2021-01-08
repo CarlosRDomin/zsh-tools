@@ -1,0 +1,3 @@
+#compdef csdel
+
+_kubens  # Leverage kubens's autocompletion :)

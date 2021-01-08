@@ -1,0 +1,46 @@
+#!/usr/bin/env zsh
+
+qdebug() {
+  local usage="\n\nUsage: qdebug RESOURCE_TYPE RESOURCE_NAME [CONTAINER_NAME | --all]\nE.g.: \`qdebug sts detection detection-0\`\nRequires the env var GITLAB_CI_TOKEN to be set, e.g. GITLAB_CI_TOKEN=\"your-token-here\""
+  if [[ "$1" == "-h" ]]; then
+    echo "Setup remote debugging on a container.${usage}"
+    return
+  elif [[ "$#" < 2 ]]; then
+    >&2 echo "ERROR: qdebug requires at least 2 arguments!${usage}"
+    return -1
+  fi
+
+  local resource_type=${1}
+  local resource_name=${2}
+  local container_names=(${3:---all})
+  local resource_is_pod=$([[ "${resource_type}" =~ ^(po|pod)$ ]] && echo "1")
+  if [[ "${container_names[1]}" == "--all" ]]; then container_names=(`qcontainers ${resource_type} ${resource_name}`); fi
+
+  # Setup the actual remote debugging
+  local patches=()
+  for container_name in ${container_names[@]}; do
+    echo "Setting up remote debugging for ${container_name}"
+    local commonDependencies="nano tree tmux git"
+
+    # Customize some steps for control-center since it's based on alpine instead of ubuntu
+    if [[ ${container_name} == "control-center" ]]; then
+      local command="sh"
+      local update_and_install="echo 'http://dl-cdn.alpinelinux.org/alpine/v3.12/main' > /etc/apk/repositories && apk -U upgrade && apk add openssh curl-dev bash ${commonDependencies}"
+      local create_debug_user="adduser -D -s /bin/sh -G root debug"
+      local start_ssh="/usr/bin/ssh-keygen -A && /usr/sbin/sshd"
+      local do_whatever="git clone https://gitlab-ci-token:${GITLAB_CI_TOKEN}@gitlab.com/aifi-ml/production/control-center.git /debug-control-center && cd /debug-control-center && git submodule update --init && npm install && chown -R debug:root /debug-control-center && npm config set unsafe-perm true && npm i pm2 -g && pm2 start npm -- start && cd /control-center && ./runBuiltControlCenter.sh"
+    else
+      local command="bash"
+      local update_and_install="apt-get update && apt-get install -yq --no-install-recommends ssh ${commonDependencies}"
+      local create_debug_user="useradd --create-home -s /bin/bash -g root debug"
+      local start_ssh="service ssh start"
+      local do_whatever="echo '\\nSleeping for a year while you debug... ;)' && sleep 365d"
+    fi
+
+    # Push the patch to the array
+    patches+=('{"name": "'${container_name}'", "command": ["'${command}'", "-c"], "args": ["'${update_and_install}' && '${create_debug_user}' && echo debug:U6aMy0wojraho | chpasswd -e && echo root:root | chpasswd && echo -e \"PermitEmptyPasswords yes\\nPermitUserEnvironment yes\\nPermitRootLogin yes\" >> /etc/ssh/sshd_config && mkdir /home/debug/.ssh && printenv | grep -v HOME > /home/debug/.ssh/environment && git config --global url.\"https://gitlab-ci-token:'${GITLAB_CI_TOKEN}'@gitlab.com/\".insteadOf \"ssh://git@gitlab.com/\" && '${start_ssh}' && tmux new-session -d && '${do_whatever}'"]}')
+  done
+
+  # Finally, apply all patches
+  qpatch "${resource_type}" "${resource_name}" "${patches[@]}"
+}

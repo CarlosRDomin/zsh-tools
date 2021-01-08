@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+qdisplay() {
+  local usage="\n\nUsage: qdisplay POD_NAME [CONTAINER_NAME | --all]\nE.g.: \`qdisplay detection-0\`"
+  if [[ "$1" == "-h" ]]; then
+    echo "Launch a virtual display (VNC server) on a container.${usage}"
+    return
+  elif [[ "$#" < 1 ]]; then
+    >&2 echo "ERROR: qdisplay requires at least 1 argument!${usage}"
+    return -1
+  fi
+
+  local resource_name=${1}
+  local container_names=(${2:---all})
+  if [[ "${container_names[1]}" == "--all" ]]; then container_names=(`qcontainers po ${resource_name}`); fi
+
+  # Launch the virtual display(s)
+  for container_name in ${container_names[@]}; do
+    echo "Launching a virtual display (:1) for ${container_name}"
+    kubectl exec -ti "${resource_name}" -- bash -c 'DEBIAN_FRONTEND=noninteractive apt-get install -yq x11vnc xvfb openbox && export DISPLAY=:1 && bash -c "Xvfb $DISPLAY -screen 0 1280x1024x16 &" && x11vnc -display $DISPLAY -nopw -shared -forever -bg && bash -c "openbox &"'
+  done
+}
