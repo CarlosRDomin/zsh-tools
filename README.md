@@ -31,6 +31,10 @@ A few very useful tools are:
   cd fonts && ./install.sh
   cd .. && rm -rf fonts
   ```
+- **[jq](https://stedolan.github.io/jq/)**: lightweight and flexible command-line JSON processor
+  ```sh
+  brew install jq
+  ```
 
 ### Installation instructions
  1. Clone this repo somewhere, e.g.
@@ -44,3 +48,27 @@ A few very useful tools are:
  3. (Optional) Configure iterm2 to use the included color theme:
     `Preferences > Profiles > Colors > Color Presets... (dropdown menu) > Import...` and choose the `iterm2_theme.itermcolors` file in this repo.
  4. (Optional) for further tweaking, refer to [this gist](https://gist.github.com/kevin-smets/8568070#further-tweaking).
+
+## Other useful tools
+These tools are not zsh-specific but will make your life easier, so I encourage you to install them ;)
+
+### Kubernetes
+- **[Kustomize](https://kustomize.io/)**: template-free framework to customize deployments. Although kubectl comes with kustomize, it currently [Jan 2021] is still on version 2.x (latest is 3.9.2), so installing the latest kustomize version is encouraged:
+  ```sh
+  brew install kustomize
+  kustomize completion zsh > $(brew --prefix)/share/zsh/site-functions/_kustomize
+  ```
+- **[Krew](https://krew.sigs.k8s.io/docs/user-guide/quickstart/)**: kubectl plugin manager (allows you to install useful plugins)
+  ```sh
+  brew install krew
+  # Add this line to your ~/.zshrc file
+  export PATH="${PATH}:${HOME}/.krew/bin"
+  ```
+- **[Kubectl node-shell](https://github.com/kvaps/kubectl-node-shell)**: kubectl plugin to launch a terminal on a given node
+  ```sh
+  kubectl krew install node-shell
+  ```
+- **[Kubectl images](https://github.com/chenjiandongx/kubectl-images)**: kubectl plugin to list all images/containers in all pods
+  ```sh
+  kubectl krew install images
+  ```
