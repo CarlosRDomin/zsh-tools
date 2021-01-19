@@ -16,7 +16,6 @@ zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]}' 'l:|=* r:|=*'
 zstyle ':completion:*' menu select
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 zstyle :compinstall filename "${HOME}/.zshrc"
-FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
 
 # History settings
 DEFAULT_USER=$(whoami)
@@ -37,24 +36,6 @@ else
 fi
 export KUBE_EDITOR='nano'
 
-# Configure oh-my-zsh
-source "${MYZSH_DIR}/.oh-my-zsh"
-
-# powerlevel10k theme settings
-source "${MYZSH_DIR}/.p10k.zsh"
-
-# Fuzzy auto-complete -> Ctrl-R FTW :)
-[ -f "${HOME}/.fzf.zsh" ] && source "${HOME}/.fzf.zsh"
-
-# Syntax highlighting (colors)
-[ -f "/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && source "/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-
-# iterm2 integration
-[ -f "${HOME}/.iterm2_shell_integration.zsh" ] && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Kubectl autocomplete
-type kubectl >/dev/null && source <(kubectl completion zsh)
-
 # Load custom functions
 fpath=("${MYZSH_DIR}/.zsh_functions" ${fpath})
 autoload -Uz ${fpath[1]}/*(.:t)
@@ -65,6 +46,23 @@ source "${MYZSH_DIR}/.aliases"
 # Load custom secrets (tokens, etc.)
 [ -f "${MYZSH_DIR}/.secrets" ] && source "${MYZSH_DIR}/.secrets"  # NOT COMMITTED :)
 
-# Autoload completions
-autoload -Uz compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
+# Load completions installed through homebrew
+fpath=("$(brew --prefix)/share/zsh/site-functions" "$(brew --prefix)/share/zsh-completions" ${fpath})
+
+# Load oh-my-zsh
+source "${MYZSH_DIR}/.oh-my-zsh"
+
+# powerlevel10k theme settings
+source "${MYZSH_DIR}/.p10k.zsh"
+
+# Fuzzy auto-complete -> Ctrl-R FTW :)
+[ -f "${HOME}/.fzf.zsh" ] && source "${HOME}/.fzf.zsh"
+
+# Syntax highlighting (colors)
+[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+# iterm2 integration
+[ -f "${HOME}/.iterm2_shell_integration.zsh" ] && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Kubectl autocomplete
+type kubectl >/dev/null && source <(kubectl completion zsh)
