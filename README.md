@@ -72,3 +72,7 @@ These tools are not zsh-specific but will make your life easier, so I encourage 
   ```sh
   kubectl krew install images
   ```
+- **[Kubectl neat diff](https://github.com/chenjiandongx/kubectl-images)**: kubectl plugin to declutter the output of `kubectl diff` (e.g. remove `managedFields`, etc.)
+  ```sh
+  GO111MODULE=on go get github.com/sh0rez/kubectl-neat-diff
+  ```

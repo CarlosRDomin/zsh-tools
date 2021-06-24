@@ -66,3 +66,9 @@ source "${MYZSH_DIR}/.p10k.zsh"
 
 # Kubectl autocomplete
 type kubectl >/dev/null && source <(kubectl completion zsh)
+
+# Add common folders to PATH
+export PATH="${PATH}:${HOME}/.krew/bin:${HOME}/go/bin"
+
+# Setup kubectl neat diff
+type kubectl-neat-diff >/dev/null && export KUBECTL_EXTERNAL_DIFF=kubectl-neat-diff
