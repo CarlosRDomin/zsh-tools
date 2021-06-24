@@ -11,7 +11,7 @@ qdel() {
   fi
 
   local label_value=${1}
-  local label_name=${2:-app}
+  local label_name=${2:-app.kubernetes.io/name}
 
-  kubectl delete po -l "${label_name}=${label_value}" --grace-period=0
+  kubectl delete po -l "${label_name}=${label_value}" --grace-period=1 --wait=false
 }
