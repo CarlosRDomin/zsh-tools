@@ -10,4 +10,4 @@ alias l='ls -al'
 alias 'g?'='git status'
 alias gov='git commit --amend --no-edit && git push -f'
 
-alias pspf='ps | grep -v grep | grep port-forward'
+alias pspf='ps aux | grep -v grep | grep port-forward'

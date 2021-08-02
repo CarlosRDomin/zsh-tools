@@ -19,4 +19,5 @@ qpf() {
   local ports=(${@:2})
 
   kubectl port-forward "${resource_type}/${resource_name}" --address localhost "${ports[@]}" > /dev/null 2>&1 &
+  disown  # Detach it from current shell so we could close it and still port-forward
 }
