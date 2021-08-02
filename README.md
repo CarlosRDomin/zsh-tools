@@ -64,9 +64,13 @@ These tools are not zsh-specific but will make your life easier, so I encourage 
   # Add this line to your ~/.zshrc file
   export PATH="${PATH}:${HOME}/.krew/bin"
   ```
-- **[Kubectl node-shell](https://github.com/kvaps/kubectl-node-shell)**: kubectl plugin to launch a terminal on a given node
+- **[Kubectl node-shell](https://github.com/kvaps/kubectl-node-shell)**: kubectl plugin to launch a terminal on a given node, without needing to know SSH credentials
   ```sh
   kubectl krew install node-shell
+  ```
+- **[Kubectl konfig](https://github.com/corneliusweig/konfig)**: kubectl plugin to import and merge kubeconfigs
+  ```sh
+  kubectl krew install konfig
   ```
 - **[Kubectl images](https://github.com/chenjiandongx/kubectl-images)**: kubectl plugin to list all images/containers in all pods
   ```sh
