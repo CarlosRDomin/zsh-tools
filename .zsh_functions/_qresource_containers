@@ -11,7 +11,7 @@ _qresource_containers() {
     qcontainers|qpatch|qpf) max_args=2 ;;
     qdisplay) COMP_WORDS=( "pod" "${COMP_WORDS[@]}" ); COMP_CWORD=$(( COMP_CWORD + 1 )) ;;  # Pretend that the first argument is always "pod"
   esac
-  if [[ ${COMP_CWORD} > ${max_args} ]]; then return -1; fi
+  if [[ ${COMP_CWORD} > ${max_args} ]]; then return 1; fi
 
   # Perform the completion based on the argument number
   case ${COMP_CWORD} in

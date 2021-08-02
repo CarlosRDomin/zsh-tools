@@ -13,6 +13,6 @@ _qpf() {
   fi
 
   # Only have autocomplete for the main argument
-  if [[ ${COMP_CWORD} != 1 ]]; then return -1; fi
+  if [[ ${COMP_CWORD} != 1 ]]; then return 1; fi
   compadd $(qls -n ${resrouce_type})  # List all resources of that type
 }

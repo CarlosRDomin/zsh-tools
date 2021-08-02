@@ -8,7 +8,7 @@ qpf() {
     return
   elif [[ "$#" < 2 ]]; then
     >&2 echo "ERROR: qpf requires at least 2 arguments!${usage}"
-    return -1
+    return 1
   fi
   if [[ $1 =~ ^(po|pod|svc|service|deploy|deployment|sts|statefulset)s?$ ]]; then
     resource_type="$1"

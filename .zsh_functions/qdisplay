@@ -7,7 +7,7 @@ qdisplay() {
     return
   elif [[ "$#" < 1 ]]; then
     >&2 echo "ERROR: qdisplay requires at least 1 argument!${usage}"
-    return -1
+    return 1
   fi
 
   local resource_name=${1}

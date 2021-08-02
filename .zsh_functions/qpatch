@@ -7,7 +7,7 @@ qpatch() {
     return
   elif [[ "$#" < 2 ]]; then
     >&2 echo "ERROR: qpatch requires at least 3 arguments!${usage}"
-    return -1
+    return 1
   fi
 
   local resource_type=${1}

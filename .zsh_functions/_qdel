@@ -4,7 +4,7 @@ _qdel() {
   local COMP_WORDS=( "${words[@]:1}" )  # Easier to work with [1,N] than [2,N+1]
   local COMP_CWORD=$(( ${CURRENT} - 1 ))  # Easier to work with [1,N] than [2,N+1]
   local max_args=2
-  if [[ ${COMP_CWORD} > ${max_args} ]]; then return -1; fi
+  if [[ ${COMP_CWORD} > ${max_args} ]]; then return 1; fi
 
   # Figure out which label key to use
   local label_name=${COMP_WORDS[2]:-app}

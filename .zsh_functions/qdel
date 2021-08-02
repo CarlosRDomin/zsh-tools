@@ -7,7 +7,7 @@ qdel() {
     return
   elif [[ "$#" < 1 ]]; then
     >&2 echo "ERROR: qdel requires at least 1 argument!${usage}"
-    return -1
+    return 1
   fi
 
   local label_value=${1}
