@@ -5,7 +5,7 @@ cs_addgpu() {
   if [[ "$1" == "-h" ]]; then
     echo "Add GPU limits to a cloud-store.${usage}"
     return
-  elif [[ "$#" < 3 ]]; then
+  elif (( $# < 3 )); then
     >&2 echo "ERROR: cs_addgpu requires at least 3 arguments!${usage}"
     return 1
   fi

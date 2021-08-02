@@ -5,7 +5,7 @@ qdel() {
   if [[ "$1" == "-h" ]]; then
     echo "Delete all pods that match a given label.${usage}"
     return
-  elif [[ "$#" < 1 ]]; then
+  elif (( $# < 1 )); then
     >&2 echo "ERROR: qdel requires at least 1 argument!${usage}"
     return 1
   fi

@@ -15,5 +15,5 @@ qls() {
   fi
   local searchFor="$1"
 
-  kubectl get "${what}" -o "${outputFormat[@]}" | ( [ -z "${searchFor}" ] && cat || grep "${grepParams[@]}" -i "${searchFor}")
+  kubectl get "${what}" -o "${outputFormat[@]}" | ( [ -z "${searchFor}" ] && cat || grep "${grepParams[@]}" -i "${searchFor}" )
 }

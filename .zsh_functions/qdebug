@@ -5,7 +5,7 @@ qdebug() {
   if [[ "$1" == "-h" ]]; then
     echo "Setup remote debugging on a container.${usage}"
     return
-  elif [[ "$#" < 2 ]]; then
+  elif (( $# < 2 )); then
     >&2 echo "ERROR: qdebug requires at least 2 arguments!${usage}"
     return 1
   fi
@@ -13,12 +13,11 @@ qdebug() {
   local resource_type=${1}
   local resource_name=${2}
   local container_names=(${3:---all})
-  local resource_is_pod=$([[ "${resource_type}" =~ ^(po|pod)$ ]] && echo "1")
   if [[ "${container_names[1]}" == "--all" ]]; then container_names=(`qcontainers ${resource_type} ${resource_name}`); fi
 
   # Setup the actual remote debugging
   local patches=()
-  for container_name in ${container_names[@]}; do
+  for container_name in "${container_names[@]}"; do
     echo "Setting up remote debugging for ${container_name}"
     local commonDependencies="nano tree tmux git"
 

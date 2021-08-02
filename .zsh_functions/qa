@@ -6,8 +6,8 @@ qa() {
     return
   fi
 
-  for dir in $@; do
+  for dir in "$@"; do
     echo "Applying ${dir}"
-    kubectl apply -k ${dir} | grep --color -v unchanged
+    kubectl apply -k "${dir}" | grep --color -v unchanged
   done
 }

@@ -6,7 +6,7 @@ qpf() {
   if [[ "$1" == "-h" ]]; then
     echo "Port-forward the given port(s).${usage}"
     return
-  elif [[ "$#" < 2 ]]; then
+  elif (( $# < 2 )); then
     >&2 echo "ERROR: qpf requires at least 2 arguments!${usage}"
     return 1
   fi

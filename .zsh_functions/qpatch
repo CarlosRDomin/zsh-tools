@@ -5,7 +5,7 @@ qpatch() {
   if [[ "$1" == "-h" ]]; then
     echo "Apply a patch to a resource.${usage}"
     return
-  elif [[ "$#" < 2 ]]; then
+  elif (( $# < 2 )); then
     >&2 echo "ERROR: qpatch requires at least 3 arguments!${usage}"
     return 1
   fi
@@ -15,16 +15,17 @@ qpatch() {
   local patches=(${@:3})
   local resource_is_pod=$([[ "${resource_type}" =~ ^(po|pod)$ ]] && echo "1")
 
-  # Handle configmaps different:
+  # Merge all patches as a single patch
+  local patches_str=$(printf ",%s" "${patches[@]}");  # Concatenate as string
+  patches_str=${patches_str:1}  # Remove leading comma
+
+  # Handle configmaps different: directly patch the spec
   if [[ "${resource_type}" =~ ^(cm|configmap)$ ]]; then
-    kubectl patch "${resource_type}" "${resource_name}" -p "${patches}"
+    kubectl patch "${resource_type}" "${resource_name}" -p "${patches_str}"
     return
   fi
 
-  # Merge all patches as a single patch
-  patches=$(printf ",%s" "${patches[@]}");  # Concatenate as string
-  patches=${patches:1}  # Remove leading comma
-  local finalPatch='{"spec": {"containers": ['${patches}']}}}}'
+  local finalPatch='{"spec": {"containers": ['${patches_str}']}}}}'
   if [[ -z ${resource_is_pod} ]]; then
     finalPatch='{"spec": {"template": '${finalPatch}'}}'
   fi
